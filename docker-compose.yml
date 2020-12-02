@@ -1,0 +1,12 @@
+version: '3.7'
+volumes:
+  app:
+    driver: local
+services:
+  app:
+    container_name: ilog-app
+    build: .
+    volumes: 
+      - ./application:/usr/share/nginx/html 
+    ports:
+      - "8080:80"
