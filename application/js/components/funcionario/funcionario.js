@@ -21,26 +21,31 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
 
     app.funcionarios = [];
     app.funcionarios_carregando = false;
-    app.erro_funcionarios = false;
+    app.funcionarios_erro = false;
     app.funcionario_selecionado = null;
+
     app.funcionario_filter = '';
 
     app.cursos = [];
     app.cursos_carregando = false;
+    app.cursos_erro = false;
     app.cursos_disponiveis = [];
 
     app.historico = [];
-    app.carregando_historico = false;
+    app.historico_carregando = false;
+    app.historico_erro = false;
 
     app.historico_cursos = [];
     app.historico_cursos_carregando = false;
+    app.historico_cursos_erro = false;
 
     app.submitFormCadastro = function(form) {
     
     };
 
     app.listarCursos = function() {   
-        app.cursos_carregando = true;     
+        app.cursos_carregando = true; 
+        app.cursos_erro = false;    
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/cursos?sortBy=titulo&order=asc",
@@ -52,11 +57,13 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             app.cursos = response['data']['items'];
         }, function(error) {
             app.cursos_carregando = false;
+            app.cursos_erro = error.data;
         });
     };
 
     app.listarCursosDisponiveis = function() {  
-        app.cursos_carregando = true;       
+        app.cursos_carregando = true;   
+        app.cursos_erro = false;    
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/cursos?sortBy=titulo&order=asc",
@@ -74,11 +81,13 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
 
         }, function(error) {
             app.cursos_carregando = true;
+            app.cursos_erro = error.data;
         });
     };
 
     app.listarHistorico = function() {
-        app.carregando_historico = true;
+        app.historico_carregando = true;
+        app.historico_erro = false;
         app.historico = [];
 
         $http({
@@ -88,16 +97,18 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             data: {},
             headers: { "Content-Type": "application/json" }
         }).then(function(response) {   
-            app.carregando_historico = false;         
+            app.historico_carregando = false;         
             app.historico = response['data'];
             app.listarHistoricoCursos();
         }, function(error) {
-            app.carregando_historico = false;
+            app.historico_carregando = false;
+            app.historico_erro = error.data;
         });
     };
 
     app.listarHistoricoCursos = function() {  
         app.historico_cursos_carregando = true;
+        app.historico_cursos_erro = false;
         app.historico_cursos = [];   
 
         $http({
@@ -134,6 +145,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
 
         }, function(error) {
             app.historico_cursos_carregando = false;
+            app.historico_cursos_erro = error.data;
         });
     };
     
@@ -142,6 +154,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
 
         app.funcionarios = [];
         app.funcionarios_carregando = true;
+        app.funcionarios_erro = false;
 
         $http({
             method: "GET",
@@ -156,7 +169,9 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
                 return f;
             });
         }, function(error) {
+            console.log(error)
             app.funcionarios_carregando = false;
+            app.funcionarios_erro = error.data;
         });
     };
 
@@ -179,6 +194,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     app.localizarFuncionario = function(funcionario) {
         app.funcionarios = [];
         app.funcionarios_carregando = true;
+        app.funcionarios_erro = false;
 
         app.funcionario_filter = funcionario.nome;
         
@@ -195,7 +211,9 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
                 return f;
             });
         }, function(error) {
+            console.log(error)
             app.funcionarios_carregando = false;
+            app.funcionarios_erro = error.data;
         });
     };
 
