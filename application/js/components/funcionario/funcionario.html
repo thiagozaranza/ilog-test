@@ -269,6 +269,7 @@
                      <th>Carga hor&aacute;ria</th>
                      <th>Valor</th>
                      <th>Data</th>
+                     <th></th>
                   </tr>
 
                   <tr ng-repeat="curso in app.historico_cursos">
@@ -277,16 +278,20 @@
                      <td>{{ curso.carga_horaria }}</td>
                      <td>R$ {{ curso.valor }}</td>
                      <td>{{ curso.data }}</td>
+                     <th>
+                        <button type="button" class="btn btn-danger" ng-click="app.removerFuncionarioCurso(curso)"
+                           style="margin-right: 10px;">Remover</button>
+                     </th>
                   </tr>
 
                   <tr ng-if="app.historico_cursos.length == 0 && !app.carregando_historico_cursos">
-                     <td colspan="5">
+                     <td colspan="6">
                         <div class="alert alert-warning" role="alert">Nenhum curso no hist&oacute;rico do funcion&aacute;rio.</div>
                      </td>                    
                   </tr>
 
                   <tr ng-if="app.carregando_historico_cursos">
-                     <td colspan="5">
+                     <td colspan="6">
                         Carregando...
                      </td>                    
                   </tr>

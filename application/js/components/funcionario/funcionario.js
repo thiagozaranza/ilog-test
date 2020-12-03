@@ -236,6 +236,33 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
         });
     };
 
+    app.removerFuncionarioCurso = function (curso) {
+
+        console.log(app.historico);
+
+        let _historico = app.historico.filter(function(h) {
+            return h.funcionarioId == app.funcionario_selecionado.id && h.cursoId == curso.id;
+        });
+
+        console.log(_historico);
+
+        if (!_historico) return;
+
+        $http({
+            method: "DELETE",
+            url: "https://5fc6d7eff3c77600165d7981.mockapi.io/curso_funcionario/" + _historico[0].id,
+            dataType: 'json',
+            data: {},
+            headers: { "Content-Type": "application/json" }
+        }).then(function(response) {                        
+            app.historico = [];
+            app.historico_cursos = [];
+            app.listarHistorico();
+        }, function(error) {
+            
+        });
+    }
+
     app.cancelarMatriculaFuncionario = function () {
         app.funcionario_selecionado = null;
         $('#modalSelecionarCurso').modal('hide');
