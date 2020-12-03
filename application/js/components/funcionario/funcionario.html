@@ -53,6 +53,12 @@
                ng-click="app.confirmarDelecaoFuncionario(funcionario)">Deletar</button>
          </td>
       </tr>
+
+      <tr ng-if="app.funcionarios.length == 0">
+         <td colspan="6">
+            <div class="alert alert-warning" role="alert">Nenhum funcion&aacute;rio cadastrado.</div>
+         </td>                    
+      </tr>
    </table>
 
    <!-- <nav aria-label="Page navigation">
@@ -197,6 +203,12 @@
                            style="margin-right: 10px;">Matricular</button>
                      </td>
                   </tr>
+
+                  <tr ng-if="app.cursos_disponiveis.length == 0">
+                     <td colspan="4">
+                        <div class="alert alert-warning" role="alert">Nenhum curso dispon&iacute;vel.</div>
+                     </td>                    
+                  </tr>
                </table>
             </div>
             <div class="modal-footer">
@@ -253,6 +265,12 @@
                      <td>{{ curso.carga_horaria }}</td>
                      <td>R$ {{ curso.valor }}</td>
                      <td>{{ curso.data }}</td>
+                  </tr>
+
+                  <tr ng-if="app.historico_cursos.length == 0">
+                     <td colspan="5">
+                        <div class="alert alert-warning" role="alert">Nenhum curso no hist&oacute;rico do funcion&aacute;rio.</div>
+                     </td>                    
                   </tr>
                </table>
             </div>
