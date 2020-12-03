@@ -101,6 +101,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             app.historico = response['data'];
             app.listarHistoricoCursos();
         }, function(error) {
+            console.log(error.data);
             app.historico_carregando = false;
             app.historico_erro = error.data;
         });
@@ -169,7 +170,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
                 return f;
             });
         }, function(error) {
-            console.log(error)
+            console.log(error);
+            alert(error.data);
             app.funcionarios_carregando = false;
             app.funcionarios_erro = error.data;
         });
@@ -187,7 +189,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             $('#modalCadastroFuncionario').modal('hide');
             app.listarFuncionarios(1);
         }, function(error) {
-            
+            console.log(error);            
+            alert(error.data);
         });
     };
 
@@ -211,7 +214,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
                 return f;
             });
         }, function(error) {
-            console.log(error)
+            console.log(error);
+            alert(error.data);
             app.funcionarios_carregando = false;
             app.funcionarios_erro = error.data;
         });
@@ -240,7 +244,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             app.funcionario_selecionado = null;
             app.listarFuncionarios(app.pagina);
         }, function(error) {
-            
+            console.log(error);
+            alert(error.data);
         });
     };
 
@@ -265,7 +270,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             $('#modalConfirmacaoDeleteFuncionario').modal('hide');            
             app.listarFuncionarios(1);
         }, function(error) {
-            
+            console.log(error);
+            alert(error.data);
         });
     };
 

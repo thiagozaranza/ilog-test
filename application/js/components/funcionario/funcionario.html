@@ -235,13 +235,13 @@
                      </td>
                   </tr>
 
-                  <tr ng-if="app.cursos_disponiveis.length == 0 && !app.cursos_disponiveis_carregando && !app.cursos_erro">
+                  <tr ng-if="app.cursos_disponiveis.length == 0 && !app.historico_cursos_carregando && !app.cursos_erro">
                      <td colspan="5">
                         <div class="alert alert-warning" role="alert">Nenhum curso dispon&iacute;vel.</div>
                      </td>
                   </tr>
 
-                  <tr ng-if="app.cursos_disponiveis_carregando">
+                  <tr ng-if="app.historico_cursos_carregando">
                      <td colspan="5">
                         Carregando...
                      </td>
@@ -316,7 +316,7 @@
                      </th>
                   </tr>
 
-                  <tr ng-if="app.historico_cursos.length == 0 && !app.historico_cursos_carregando && !app.historico_cursos_erro">
+                  <tr ng-if="app.historico_cursos.length == 0 && !app.historico_cursos_carregando && !app.historico_erro && !app.historico_cursos_erro">
                      <td colspan="6">
                         <div class="alert alert-warning" role="alert">Nenhum curso no hist&oacute;rico do
                            funcion&aacute;rio.</div>
@@ -326,6 +326,12 @@
                   <tr ng-if="app.historico_cursos_carregando">
                      <td colspan="6">
                         Carregando...
+                     </td>
+                  </tr>
+
+                  <tr ng-if="app.historico_erro">
+                     <td colspan="6">
+                        <div class="alert alert-danger" role="alert"><b>Woops!</b> {{ app.historico_erro }}</div>
                      </td>
                   </tr>
 
