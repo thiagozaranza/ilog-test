@@ -12,10 +12,12 @@
 
             <form class="navbar-form navbar-left">
                <div class="form-group">
-                  <input type="text" class="form-control" id="funcionario_filter" ng-model="funcionario.nome">
+                  <input type="text" class="form-control" id="funcionario_filter" ng-model="funcionario_search.nome">
                </div>
-               <button type="button" class="btn btn-default" ng-click="app.localizarFuncionario(funcionario)">Localizar</button>
-               <button type="button" class="btn btn-default" ng-if="app.funcionario_filter" ng-click="app.limparFiltro()">Listar todos</button>
+               <button type="button" class="btn btn-default"
+                  ng-click="app.localizarFuncionario(funcionario_search)">Localizar</button>
+               <button type="button" class="btn btn-default" ng-if="app.funcionario_filter"
+                  ng-click="app.limparFiltro()">Listar todos</button>
             </form>
 
             <ul class="nav navbar-nav navbar-right">
@@ -44,7 +46,7 @@
          <td>{{ funcionario.nome }}</td>
          <td>{{ funcionario.endereco }}</td>
          <td>{{ funcionario.telefone }}</td>
-         <td>{{ funcionario.admissao }}</td>
+         <td>{{ funcionario.admissao | date: 'dd/MM/yyyy' }}</td>
          <td>
             <button type="button" class="btn btn-info" ng-click="app.exibirHistorico(funcionario)"
                style="margin-right: 10px;">Hist&oacute;rico</button>
@@ -55,16 +57,16 @@
          </td>
       </tr>
 
-      <tr ng-if="app.funcionarios.length == 0 && !app.carregando_funcionarios">
+      <tr ng-if="app.funcionarios.length == 0 && !app.funcionarios_carregando">
          <td colspan="6">
             <div class="alert alert-warning" role="alert">Nenhum funcion&aacute;rio cadastrado.</div>
-         </td>                    
+         </td>
       </tr>
 
-      <tr ng-if="app.carregando_funcionarios">
+      <tr ng-if="app.funcionarios_carregando">
          <td colspan="6">
             Carregando...
-         </td>                    
+         </td>
       </tr>
    </table>
 
@@ -77,85 +79,98 @@
    <!-- Modal cadastro de funcionario-->
    <div class="modal fade" id="modalCadastroFuncionario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
-         <div class="modal-content">
-            <div class="modal-header">
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                     aria-hidden="true">&times;</span></button>
-               <h4 class="modal-title" id="myModalLabel">Cadastro de funcion&aacute;rio</h4>
-            </div>
-            <div class="modal-body">
-               <form novalidate>
+         <form name="formCadastroUsuario" ng-submit="app.submitFormCadastro(formCadastroUsuario)" novalidate>
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Cadastro de funcion&aacute;rio</h4>
+               </div>
+               <div class="modal-body">
 
                   <div class="form-group">
-                     <label for="appInputNome">Nome</label>
-                     <input type="text" class="form-control" id="appInputNome" ng-model="funcionario.nome"
-                        placeholder="nome completo">
+                     <label for="appInputNome">Nome*</label>
+                     <input id="appInputNome" type="text" class="form-control" ng-model="funcionario.nome"
+                        placeholder="nome completo" required>
                   </div>
                   <div class="form-group">
-                     <label for="appInputEndereco">Endereço</label>
-                     <input type="text" class="form-control" id="appInputEndereco" ng-model="funcionario.endereco">
+                     <label for="appInputEndereco">Endereço*</label>
+                     <input id="appInputEndereco" type="text" class="form-control" ng-model="funcionario.endereco"
+                        required>
                   </div>
                   <div class="form-group">
-                     <label for="appInputTelefone">Telefone</label>
-                     <input type="text" class="form-control" id="appInputTelefone" ng-model="funcionario.telefone">
+                     <label for="appInputTelefone">Telefone*</label>
+                     <input id="appInputTelefone" type="text" class="form-control" ng-model="funcionario.telefone"
+                        required>
                   </div>
                   <div class="form-group">
-                     <label for="appInputAdmissao">Data de admiss&atilde;o</label>
-                     <input type="text" class="form-control" id="appInputAdmissao" ng-model="funcionario.admissao">
+                     <label for="appInputAdmissao">Data de admiss&atilde;o*</label>
+                     <input id="appInputAdmissao" class="form-control" ng-model="funcionario.admissao" type="date"
+                        required>
                   </div>
-               </form>
-
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal"
+                     style="float: left;">Cancelar</button>
+                  <button type="submit" 
+                     class="btn btn-primary" 
+                     ng-disabled="formCadastroUsuario.$invalid"
+                     ng-click="app.cadastrarFuncionario(funcionario)">
+                     Salvar</button>
+               </div>
             </div>
-            <div class="modal-footer">
-               <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left;">Cancelar</button>
-               <button type="button" class="btn btn-primary"
-                  ng-click="app.cadastrarFuncionario(funcionario)">Salvar</button>
-            </div>
-         </div>
+         </form>
       </div>
    </div>
 
    <!-- Modal edição de funcionario-->
    <div class="modal fade" id="modalEdicaoFuncionario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
-         <div class="modal-content">
-            <div class="modal-header">
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                     aria-hidden="true">&times;</span></button>
-               <h4 class="modal-title" id="myModalLabel">Editar funcion&aacute;rio</h4>
-            </div>
-            <div class="modal-body">
-               <form novalidate>
-
+         <form name="formEdicaoUsuario" ng-submit="app.submitFormEdicao(formEdicaoUsuario)" novalidate>
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Editar funcion&aacute;rio</h4>
+               </div>
+               <div class="modal-body">
                   <div class="form-group">
-                     <label for="appInputNome">Nome</label>
-                     <input type="text" class="form-control" id="appInputNome"
+                     <label for="appInputEditNome">Nome</label>
+                     <input type="text" class="form-control" id="appInputEditNome"
                         ng-model="app.funcionario_selecionado.nome" value="app.funcionario_selecionado.nome"
-                        placeholder="nome completo">
+                        placeholder="nome completo"
+                        required>
                   </div>
                   <div class="form-group">
-                     <label for="appInputEndereco">Endereço</label>
-                     <input type="text" class="form-control" id="appInputEndereco"
-                        ng-model="app.funcionario_selecionado.endereco" value="app.funcionario_selecionado.endereco">
+                     <label for="appInputEditEndereco">Endereço</label>
+                     <input type="text" class="form-control" id="appInputEditEndereco"
+                        ng-model="app.funcionario_selecionado.endereco" value="app.funcionario_selecionado.endereco" required>
                   </div>
                   <div class="form-group">
-                     <label for="appInputTelefone">Telefone</label>
-                     <input type="text" class="form-control" id="appInputTelefone"
-                        ng-model="app.funcionario_selecionado.telefone" value="app.funcionario_selecionado.telefone">
+                     <label for="appInputEditTelefone">Telefone</label>
+                     <input type="text" class="form-control" id="appInputEditTelefone"
+                        ng-model="app.funcionario_selecionado.telefone" value="app.funcionario_selecionado.telefone" required>
                   </div>
                   <div class="form-group">
-                     <label for="appInputAdmissao">Data de admiss&atilde;o</label>
-                     <input type="text" class="form-control" id="appInputAdmissao"
-                        ng-model="app.funcionario_selecionado.admissao" value="app.funcionario_selecionado.admissao">
-                  </div>
-               </form>
+                     <label for="appInputEditAdmissao">Data de admiss&atilde;o</label>
 
+                     <input class="form-control" id="appInputEditAdmissao"
+                        ng-model="app.funcionario_selecionado.admissao" type="date" [required="true" ]
+                        [ng-required="true" ] placeholder="dd/MM/yyyy" required>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal"
+                     style="float: left;">Cancelar</button>
+                  <button type="submit" 
+                     class="btn btn-primary" 
+                     ng-disabled="formEdicaoUsuario.$invalid"
+                     ng-click="app.atualizarFuncionario()">
+                     Salvar
+                  </button>
+               </div>
             </div>
-            <div class="modal-footer">
-               <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left;">Cancelar</button>
-               <button type="button" class="btn btn-primary" ng-click="app.atualizarFuncionario()">Salvar</button>
-            </div>
-         </div>
+         </form>
       </div>
    </div>
 
@@ -184,7 +199,8 @@
    </div>
 
    <!-- Modal de matrícula de funcionario em um curso -->
-   <div class="modal fade" tabindex="-1"  style="z-index: 9999;" id="modalSelecionarCurso" role="dialog" aria-labelledby="">
+   <div class="modal fade" tabindex="-1" style="z-index: 9999;" id="modalSelecionarCurso" role="dialog"
+      aria-labelledby="">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
             <div class="modal-header">
@@ -213,16 +229,16 @@
                      </td>
                   </tr>
 
-                  <tr ng-if="app.cursos_disponiveis.length == 0 && !app.carregando_cursos_disponiveis">
+                  <tr ng-if="app.cursos_disponiveis.length == 0 && !app.cursos_carregando_disponiveis">
                      <td colspan="5">
                         <div class="alert alert-warning" role="alert">Nenhum curso dispon&iacute;vel.</div>
-                     </td>                    
+                     </td>
                   </tr>
 
-                  <tr ng-if="app.carregando_cursos_disponiveis">
+                  <tr ng-if="app.cursos_carregando_disponiveis">
                      <td colspan="5">
                         Carregando...
-                     </td>                    
+                     </td>
                   </tr>
                </table>
             </div>
@@ -257,7 +273,8 @@
                      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav navbar-right">
                            <li>
-                              <button type="button" ng-if="!app.carregando_historico_cursos" class="btn btn-primary" style="margin-top: 10px;" data-toggle="modal"
+                              <button type="button" ng-disabled="app.historico_cursos_carregando"
+                                 class="btn btn-primary" style="margin-top: 10px;" data-toggle="modal"
                                  data-target="#modalSelecionarCurso">Matricular funcion&aacute;rio em curso</button>
                            </li>
                         </ul>
@@ -280,23 +297,24 @@
                      <td>{{ curso.titulo }}</td>
                      <td>{{ curso.carga_horaria }}</td>
                      <td>R$ {{ curso.valor }}</td>
-                     <td>{{ curso.data }}</td>
+                     <td>{{ curso.data | date: 'dd/MM/yyyy' }}</td>
                      <th>
                         <button type="button" class="btn btn-danger" ng-click="app.removerFuncionarioCurso(curso)"
                            style="margin-right: 10px;">Remover</button>
                      </th>
                   </tr>
 
-                  <tr ng-if="app.historico_cursos.length == 0 && !app.carregando_historico_cursos">
+                  <tr ng-if="app.historico_cursos.length == 0 && !app.historico_cursos_carregando">
                      <td colspan="6">
-                        <div class="alert alert-warning" role="alert">Nenhum curso no hist&oacute;rico do funcion&aacute;rio.</div>
-                     </td>                    
+                        <div class="alert alert-warning" role="alert">Nenhum curso no hist&oacute;rico do
+                           funcion&aacute;rio.</div>
+                     </td>
                   </tr>
 
-                  <tr ng-if="app.carregando_historico_cursos">
+                  <tr ng-if="app.historico_cursos_carregando">
                      <td colspan="6">
                         Carregando...
-                     </td>                    
+                     </td>
                   </tr>
                </table>
             </div>
