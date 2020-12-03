@@ -43,7 +43,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     app.listarHistorico = function() {
         $http({
             method: "GET",
-            url: "https://5fc6d7eff3c77600165d7981.mockapi.io/curso_funcionario?sortBy=createdAt&order=desc&funcionarioId=" + app.funcionario_selecionado.id,
+            url: "https://5fc6d7eff3c77600165d7981.mockapi.io/curso_funcionario?sortBy=createdAt&order=desc",
             dataType: 'json',
             data: {},
             headers: { "Content-Type": "application/json" }
@@ -64,11 +64,27 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             headers: { "Content-Type": "application/json" }
         }).then(function(response) {  
 
-            app.historico_cursos = angular.copy(response['data']['items'].filter(function(_curso) {
-                return app.historico.map(function(h) {
-                    return parseInt(h.cursoId)
-                }).includes(parseInt(_curso.id));
+            // Filtrar apenas histórico do funcionário selecionado
+            let _historico = app.historico.filter(function(h) {
+                return h.funcionarioId == app.funcionario_selecionado.id;
+            });
+
+            // Filtrar cursos que constam no histórico do funcionário
+            let _historico_cursos = angular.copy(response['data']['items'].filter(function(c) {
+                return _historico.map(function(h) {
+                    return parseInt(h.cursoId);
+                }).includes(parseInt(c.id));
             }));
+
+            // Injetar o parâmetro data no objeto curso para indicar a data da matrícula
+            _historico_cursos.map(function(c) {
+                c.data = _historico.find(function(h) {
+                    return h.cursoId == c.id && h.funcionarioId == app.funcionario_selecionado.id
+                }).createdAt;
+                return c;
+            });
+
+            app.historico_cursos = _historico_cursos;
 
         }, function(error) {
             
@@ -173,7 +189,10 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             },
             headers: { "Content-Type": "application/json" }
         }).then(function(response) {            
-            app.listarCursos();
+            $('#modalSelecionarCurso').modal('hide');
+            app.historico = [];
+            app.historico_cursos = [];
+            app.listarHistorico();
         }, function(error) {
             
         });
@@ -184,6 +203,11 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
         $('#modalSelecionarCurso').modal('hide');
     };
 
+    app.cancelarHistoricoFuncionario = function() {
+        app.funcionario_selecionado = null;
+        $('#modalHistoricoFuncionario').modal('hide');
+    };
+
     app.listarFuncionarios(1);
 
     $('#modalSelecionarCurso').on('show.bs.modal', function (e) {
@@ -191,7 +215,10 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     });
 
     $('#modalHistoricoFuncionario').on('show.bs.modal', function (e) {
+        app.historico = [];
+        app.historico_cursos = [];
         app.listarHistorico();
     });
+    
 
 });

@@ -170,8 +170,8 @@
       </div>
    </div>
 
-   <!-- Modal de matrícula de funcinario em um curso -->
-   <div class="modal fade" tabindex="-1" id="modalSelecionarCurso" role="dialog" aria-labelledby="">
+   <!-- Modal de matrícula de funcionario em um curso -->
+   <div class="modal fade" tabindex="-1"  style="z-index: 9999;" id="modalSelecionarCurso" role="dialog" aria-labelledby="">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
             <div class="modal-header">
@@ -220,31 +220,47 @@
 
             </div>
             <div class="modal-body">
+
+               <nav class="navbar navbar-default">
+                  <div class="container-fluid">
+                     <div class="navbar-header">
+                        <a class="navbar-brand" href="#">Lista de cursos do funcion&aacute;rio</a>
+                     </div>
+
+                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav navbar-right">
+                           <li>
+                              <button type="button" class="btn btn-primary" style="margin-top: 10px;" data-toggle="modal"
+                                 data-target="#modalSelecionarCurso">Matricular em curso</button>
+                           </li>
+                        </ul>
+                     </div><!-- /.navbar-collapse -->
+                  </div><!-- /.container-fluid -->
+               </nav>
+
                <table class="table table-striped">
                   <tr>
+                     <th>ID</th>
                      <th>T&iacute;tulo</th>
                      <th>Carga hor&aacute;ria</th>
                      <th>Valor</th>
-                     <th></th>
+                     <th>Data</th>
                   </tr>
 
                   <tr ng-repeat="curso in app.historico_cursos">
+                     <td>{{ curso.id }}</td>
                      <td>{{ curso.titulo }}</td>
                      <td>{{ curso.carga_horaria }}</td>
                      <td>R$ {{ curso.valor }}</td>
-                     <td>
-                        <button type="button" class="btn btn-primary" ng-click="app.matricularFuncionario(curso)"
-                           style="margin-right: 10px;">Matricular</button>
-                     </td>
+                     <td>{{ curso.data }}</td>
                   </tr>
                </table>
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-default" ng-click="app.cancelarMatriculaFuncionario()"
+               <button type="button" class="btn btn-default" ng-click="app.cancelarHistoricoFuncionario()"
                   style="float: left;">Cancelar</button>
             </div>
          </div>
-
       </div>
    </div>
 
