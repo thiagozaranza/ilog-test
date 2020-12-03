@@ -22,6 +22,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     app.funcionarios = [];
     app.carregando_funcionarios = false;
     app.funcionario_selecionado = null;
+    app.funcionario_filter = '';
 
     app.cursos = [];
     app.carregando_cursos = false;
@@ -73,6 +74,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
 
     app.listarHistorico = function() {
         app.carregando_historico = true;
+        app.historico = [];
+
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/curso_funcionario?sortBy=createdAt&order=desc",
@@ -89,7 +92,9 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     };
 
     app.listarHistoricoCursos = function() {  
-        app.carregando_historico_cursos = true;      
+        app.carregando_historico_cursos = true;
+        app.historico_cursos = [];   
+
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/cursos?sortBy=titulo&order=asc",
@@ -129,7 +134,10 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     
     app.listarFuncionarios = function(pagina) {
         app.pagina = pagina;
+
+        app.funcionarios = [];
         app.carregando_funcionarios = true;
+
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/funcionarios?sortBy=nome&order=asc&limit="+app.limite+"&page="+pagina,
@@ -154,10 +162,37 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             headers: { "Content-Type": "application/json" }
         }).then(function(response) {
             $('#modalCadastroFuncionario').modal('hide');
-            app.listarFuncionarios();
+            app.listarFuncionarios(1);
         }, function(error) {
             
         });
+    };
+
+    app.localizarFuncionario = function(funcionario) {
+        app.funcionarios = [];
+        app.carregando_funcionarios = true;
+
+        app.funcionario_filter = funcionario.nome;
+        
+        $http({
+            method: "GET",
+            url: "https://5fc6d7eff3c77600165d7981.mockapi.io/funcionarios?sortBy=nome&order=asc&limit="+app.limite+"&page=1&search="+app.funcionario_filter,
+            dataType: 'json',
+            data: {},
+            headers: { "Content-Type": "application/json" }
+        }).then(function(response) {
+            app.carregando_funcionarios = false;
+            app.paginas = [...Array(Math.floor(response['data']['count']/app.limite)).keys()];
+            app.funcionarios = response['data']['items'];
+        }, function(error) {
+            app.carregando_funcionarios = false;
+        });
+    };
+
+    app.limparFiltro = function() {
+        app.funcionario_filter = '';
+        $('#funcionario_filter').val('');
+        app.listarFuncionarios(1);
     };
 
     app.editarFuncionario = function(funcionario) {
@@ -271,19 +306,20 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
 
     app.listarFuncionarios(1);
 
+    $('#modalCadastroFuncionario').on('show.bs.modal', function (e) {
+        $('#appInputNome').val('');
+        $('#appInputEndereco').val('');
+        $('#appInputTelefone').val('');
+        $('#appInputAdmissao').val('');
+    });
+
     $('#modalSelecionarCurso').on('show.bs.modal', function (e) {
         app.listarCursosDisponiveis();
     });
 
     $('#modalHistoricoFuncionario').on('show.bs.modal', function (e) {
-        app.carregando_historico = false;
-        app.historico = [];
-
-        app.carregando_historico_cursos = false;
-        app.historico_cursos = [];
-        
         app.listarHistorico();
     });
-    
 
+    $('#funcionario_filter').focus();
 });
