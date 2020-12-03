@@ -54,9 +54,15 @@
          </td>
       </tr>
 
-      <tr ng-if="app.funcionarios.length == 0">
+      <tr ng-if="app.funcionarios.length == 0 && !app.carregando_funcionarios">
          <td colspan="6">
             <div class="alert alert-warning" role="alert">Nenhum funcion&aacute;rio cadastrado.</div>
+         </td>                    
+      </tr>
+
+      <tr ng-if="app.carregando_funcionarios">
+         <td colspan="6">
+            Carregando...
          </td>                    
       </tr>
    </table>
@@ -204,9 +210,15 @@
                      </td>
                   </tr>
 
-                  <tr ng-if="app.cursos_disponiveis.length == 0">
+                  <tr ng-if="app.cursos_disponiveis.length == 0 && !app.carregando_cursos_disponiveis">
                      <td colspan="4">
                         <div class="alert alert-warning" role="alert">Nenhum curso dispon&iacute;vel.</div>
+                     </td>                    
+                  </tr>
+
+                  <tr ng-if="app.carregando_cursos_disponiveis">
+                     <td colspan="4">
+                        Carregando...
                      </td>                    
                   </tr>
                </table>
@@ -267,9 +279,15 @@
                      <td>{{ curso.data }}</td>
                   </tr>
 
-                  <tr ng-if="app.historico_cursos.length == 0">
+                  <tr ng-if="app.historico_cursos.length == 0 && !app.carregando_historico_cursos">
                      <td colspan="5">
                         <div class="alert alert-warning" role="alert">Nenhum curso no hist&oacute;rico do funcion&aacute;rio.</div>
+                     </td>                    
+                  </tr>
+
+                  <tr ng-if="app.carregando_historico_cursos">
+                     <td colspan="5">
+                        Carregando...
                      </td>                    
                   </tr>
                </table>

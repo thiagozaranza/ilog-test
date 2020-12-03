@@ -20,36 +20,45 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     app.limite = 100;
 
     app.funcionarios = [];
+    app.carregando_funcionarios = false;
     app.funcionario_selecionado = null;
 
     app.cursos = [];
+    app.carregando_cursos = false;
     app.cursos_disponiveis = [];
 
     app.historico = [];
-    app.historico_cursos = [];
+    app.carregando_historico = false;
 
-    app.listarCursos = function() {        
+    app.historico_cursos = [];
+    app.carregando_historico_cursos = false;
+
+    app.listarCursos = function() {   
+        app.carregando_cursos = true;     
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/cursos?sortBy=titulo&order=asc",
             dataType: 'json',
             data: {},
             headers: { "Content-Type": "application/json" }
-        }).then(function(response) {            
+        }).then(function(response) {
+            app.carregando_cursos = false;               
             app.cursos = response['data']['items'];
         }, function(error) {
-            
+            app.carregando_cursos = false;
         });
     };
 
-    app.listarCursosDisponiveis = function() {        
+    app.listarCursosDisponiveis = function() {  
+        app.carregando_cursos = true;       
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/cursos?sortBy=titulo&order=asc",
             dataType: 'json',
             data: {},
             headers: { "Content-Type": "application/json" }
-        }).then(function(response) {            
+        }).then(function(response) {           
+            app.carregando_cursos = false;  
             let _cursos = response['data']['items'];
 
             // Remover da lista de cursos aqueles já cursados pelo funcionário
@@ -58,26 +67,29 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             });
 
         }, function(error) {
-            
+            app.carregando_cursos = true;
         });
     };
 
     app.listarHistorico = function() {
+        app.carregando_historico = true;
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/curso_funcionario?sortBy=createdAt&order=desc",
             dataType: 'json',
             data: {},
             headers: { "Content-Type": "application/json" }
-        }).then(function(response) {            
+        }).then(function(response) {   
+            app.carregando_historico = false;         
             app.historico = response['data'];
             app.listarHistoricoCursos();
         }, function(error) {
-            
+            app.carregando_historico = false;
         });
     };
 
-    app.listarHistoricoCursos = function() {        
+    app.listarHistoricoCursos = function() {  
+        app.carregando_historico_cursos = true;      
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/cursos?sortBy=titulo&order=asc",
@@ -85,6 +97,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             data: {},
             headers: { "Content-Type": "application/json" }
         }).then(function(response) {  
+
+            app.carregando_historico_cursos = false;
 
             // Filtrar apenas histórico do funcionário selecionado
             let _historico = app.historico.filter(function(h) {
@@ -109,12 +123,13 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             app.historico_cursos = _historico_cursos;
 
         }, function(error) {
-            
+            app.carregando_historico_cursos = false;
         });
     };
     
     app.listarFuncionarios = function(pagina) {
         app.pagina = pagina;
+        app.carregando_funcionarios = true;
         $http({
             method: "GET",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/funcionarios?sortBy=nome&order=asc&limit="+app.limite+"&page="+pagina,
@@ -122,10 +137,11 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             data: {},
             headers: { "Content-Type": "application/json" }
         }).then(function(response) {
+            app.carregando_funcionarios = false;
             app.paginas = [...Array(Math.floor(response['data']['count']/app.limite)).keys()];
             app.funcionarios = response['data']['items'];
         }, function(error) {
-            
+            app.carregando_funcionarios = false;
         });
     };
 
@@ -237,8 +253,12 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     });
 
     $('#modalHistoricoFuncionario').on('show.bs.modal', function (e) {
+        app.carregando_historico = false;
         app.historico = [];
+
+        app.carregando_historico_cursos = false;
         app.historico_cursos = [];
+        
         app.listarHistorico();
     });
     
