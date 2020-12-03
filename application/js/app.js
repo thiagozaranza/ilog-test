@@ -2,12 +2,12 @@ var app = angular.module('ilog-test', ['ui.router']);
 
 app.config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/usuario');
+    $urlRouterProvider.otherwise('/funcionario');
 
     var usuarioState = {
-        name: 'usuario',
-        url: '/usuario',
-        component: 'usuario'
+        name: 'funcionario',
+        url: '/funcionario',
+        component: 'funcionario'
     }
 
     var cursoState = {

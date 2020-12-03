@@ -1,0 +1,251 @@
+<div ng-app="ilog-test" ng-controller="FuncionarioController as app">
+
+   <nav class="navbar navbar-default">
+      <div class="container-fluid">
+         <!-- Brand and toggle get grouped for better mobile display -->
+         <div class="navbar-header">
+            <a class="navbar-brand" href="#">Funcion&aacute;rio</a>
+         </div>
+
+         <!-- Collect the nav links, forms, and other content for toggling -->
+         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+            <form class="navbar-form navbar-left">
+               <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Search">
+               </div>
+               <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+
+            <ul class="nav navbar-nav navbar-right">
+               <li>
+                  <button type="button" class="btn btn-primary" style="margin-top: 10px;" data-toggle="modal"
+                     data-target="#modalCadastroFuncionario">Cadastrar funcion&aacute;rio</button>
+               </li>
+            </ul>
+
+         </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+   </nav>
+
+   <table class="table table-striped">
+      <tr>
+         <th>Id</th>
+         <th>Nome</th>
+         <th>Endereço</th>
+         <th>Telefone</th>
+         <th>Data admissão</th>
+         <th></th>
+      </tr>
+
+      <tr ng-repeat="funcionario in app.funcionarios">
+         <td>{{ funcionario.id }}</td>
+         <td>{{ funcionario.nome }}</td>
+         <td>{{ funcionario.endereco }}</td>
+         <td>{{ funcionario.telefone }}</td>
+         <td>{{ funcionario.admissao }}</td>
+         <td>
+            <button type="button" class="btn btn-info" ng-click="app.exibirHistorico(funcionario)"
+               style="margin-right: 10px;">Hist&oacute;rico</button>
+            <button type="button" class="btn btn-default" ng-click="app.editarFuncionario(funcionario)"
+               style="margin-right: 10px;">Editar</button>
+            <button type="button" class="btn btn-danger"
+               ng-click="app.confirmarDelecaoFuncionario(funcionario)">Deletar</button>
+         </td>
+      </tr>
+   </table>
+
+   <!-- <nav aria-label="Page navigation">
+      <ul class="pagination">        
+        <li ng-repeat="pag in app.paginas"><a href="#">{{ pag }}</a></li>              
+      </ul>
+    </nav> -->
+
+   <!-- Modal cadastro de funcionario-->
+   <div class="modal fade" id="modalCadastroFuncionario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                     aria-hidden="true">&times;</span></button>
+               <h4 class="modal-title" id="myModalLabel">Cadastro de funcion&aacute;rio</h4>
+            </div>
+            <div class="modal-body">
+               <form novalidate>
+
+                  <div class="form-group">
+                     <label for="appInputNome">Nome</label>
+                     <input type="text" class="form-control" id="appInputNome" ng-model="funcionario.nome"
+                        placeholder="nome completo">
+                  </div>
+                  <div class="form-group">
+                     <label for="appInputEndereco">Endereço</label>
+                     <input type="text" class="form-control" id="appInputEndereco" ng-model="funcionario.endereco">
+                  </div>
+                  <div class="form-group">
+                     <label for="appInputTelefone">Telefone</label>
+                     <input type="text" class="form-control" id="appInputTelefone" ng-model="funcionario.telefone">
+                  </div>
+                  <div class="form-group">
+                     <label for="appInputAdmissao">Data de admiss&atilde;o</label>
+                     <input type="text" class="form-control" id="appInputAdmissao" ng-model="funcionario.admissao">
+                  </div>
+               </form>
+
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left;">Cancelar</button>
+               <button type="button" class="btn btn-primary"
+                  ng-click="app.cadastrarFuncionario(funcionario)">Salvar</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Modal edição de funcionario-->
+   <div class="modal fade" id="modalEdicaoFuncionario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                     aria-hidden="true">&times;</span></button>
+               <h4 class="modal-title" id="myModalLabel">Editar funcion&aacute;rio</h4>
+            </div>
+            <div class="modal-body">
+               <form novalidate>
+
+                  <div class="form-group">
+                     <label for="appInputNome">Nome</label>
+                     <input type="text" class="form-control" id="appInputNome"
+                        ng-model="app.funcionario_selecionado.nome" value="app.funcionario_selecionado.nome"
+                        placeholder="nome completo">
+                  </div>
+                  <div class="form-group">
+                     <label for="appInputEndereco">Endereço</label>
+                     <input type="text" class="form-control" id="appInputEndereco"
+                        ng-model="app.funcionario_selecionado.endereco" value="app.funcionario_selecionado.endereco">
+                  </div>
+                  <div class="form-group">
+                     <label for="appInputTelefone">Telefone</label>
+                     <input type="text" class="form-control" id="appInputTelefone"
+                        ng-model="app.funcionario_selecionado.telefone" value="app.funcionario_selecionado.telefone">
+                  </div>
+                  <div class="form-group">
+                     <label for="appInputAdmissao">Data de admiss&atilde;o</label>
+                     <input type="text" class="form-control" id="appInputAdmissao"
+                        ng-model="app.funcionario_selecionado.admissao" value="app.funcionario_selecionado.admissao">
+                  </div>
+               </form>
+
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left;">Cancelar</button>
+               <button type="button" class="btn btn-primary" ng-click="app.atualizarFuncionario()">Salvar</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Modal de confirmação de deleção do funcionario-->
+   <div class="modal fade" tabindex="-1" id="modalConfirmacaoDeleteFuncionario" role="dialog"
+      aria-labelledby="modalConfirmacaoDeleteFuncionarioLabel">
+      <div class="modal-dialog modal-sm" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                     aria-hidden="true">&times;</span></button>
+               <h4 class="modal-title" id="myModalLabel">Atenção!</h4>
+            </div>
+            <div class="modal-body">
+               Deseja realmente deletar o funcionário?
+               <h3>{{ app.funcionario_selecionado.nome }}</h3>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-default" ng-click="app.cancelarDelecaoFuncionario()"
+                  style="float: left;">Cancelar</button>
+               <button type="button" class="btn btn-danger" ng-click="app.deletarFuncionario()">Confirmar</button>
+            </div>
+         </div>
+
+      </div>
+   </div>
+
+   <!-- Modal de matrícula de funcinario em um curso -->
+   <div class="modal fade" tabindex="-1" id="modalSelecionarCurso" role="dialog" aria-labelledby="">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                     aria-hidden="true">&times;</span></button>
+               <h4 class="modal-title" id="myModalLabel">Selecione um curso</h4>
+            </div>
+            <div class="modal-body">
+               <table class="table table-striped">
+                  <tr>
+                     <th>T&iacute;tulo</th>
+                     <th>Carga hor&aacute;ria</th>
+                     <th>Valor</th>
+                     <th></th>
+                  </tr>
+
+                  <tr ng-repeat="curso in app.cursos">
+                     <td>{{ curso.titulo }}</td>
+                     <td>{{ curso.carga_horaria }}</td>
+                     <td>R$ {{ curso.valor }}</td>
+                     <td>
+                        <button type="button" class="btn btn-primary" ng-click="app.matricularFuncionario(curso)"
+                           style="margin-right: 10px;">Matricular</button>
+                     </td>
+                  </tr>
+               </table>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-default" ng-click="app.cancelarMatriculaFuncionario()"
+                  style="float: left;">Cancelar</button>
+            </div>
+         </div>
+
+      </div>
+   </div>
+
+   <!-- Modal de histórico de funcinario -->
+   <div class="modal fade" tabindex="-1" id="modalHistoricoFuncionario" role="dialog" aria-labelledby="">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                     aria-hidden="true">&times;</span></button>
+               <h4 class="modal-title">Histórico do funcion&aacute;rio</h4>
+               <h3>{{ app.funcionario_selecionado.nome }}</h3>
+
+            </div>
+            <div class="modal-body">
+               <table class="table table-striped">
+                  <tr>
+                     <th>T&iacute;tulo</th>
+                     <th>Carga hor&aacute;ria</th>
+                     <th>Valor</th>
+                     <th></th>
+                  </tr>
+
+                  <tr ng-repeat="curso in app.historico_cursos">
+                     <td>{{ curso.titulo }}</td>
+                     <td>{{ curso.carga_horaria }}</td>
+                     <td>R$ {{ curso.valor }}</td>
+                     <td>
+                        <button type="button" class="btn btn-primary" ng-click="app.matricularFuncionario(curso)"
+                           style="margin-right: 10px;">Matricular</button>
+                     </td>
+                  </tr>
+               </table>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-default" ng-click="app.cancelarMatriculaFuncionario()"
+                  style="float: left;">Cancelar</button>
+            </div>
+         </div>
+
+      </div>
+   </div>
+
+</div>
