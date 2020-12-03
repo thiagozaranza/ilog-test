@@ -23,6 +23,8 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     app.funcionario_selecionado = null;
 
     app.cursos = [];
+    app.cursos_disponiveis = [];
+
     app.historico = [];
     app.historico_cursos = [];
 
@@ -35,6 +37,26 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             headers: { "Content-Type": "application/json" }
         }).then(function(response) {            
             app.cursos = response['data']['items'];
+        }, function(error) {
+            
+        });
+    };
+
+    app.listarCursosDisponiveis = function() {        
+        $http({
+            method: "GET",
+            url: "https://5fc6d7eff3c77600165d7981.mockapi.io/cursos?sortBy=titulo&order=asc",
+            dataType: 'json',
+            data: {},
+            headers: { "Content-Type": "application/json" }
+        }).then(function(response) {            
+            let _cursos = response['data']['items'];
+
+            // Remover da lista de cursos aqueles já cursados pelo funcionário
+            app.cursos_disponiveis = _cursos.filter(function(c) {
+                return !app.historico_cursos.map(hc => hc.id).includes(c.id);
+            });
+
         }, function(error) {
             
         });
@@ -211,7 +233,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
     app.listarFuncionarios(1);
 
     $('#modalSelecionarCurso').on('show.bs.modal', function (e) {
-        app.listarCursos();
+        app.listarCursosDisponiveis();
     });
 
     $('#modalHistoricoFuncionario').on('show.bs.modal', function (e) {
