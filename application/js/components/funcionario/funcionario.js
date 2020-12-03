@@ -238,13 +238,9 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
 
     app.removerFuncionarioCurso = function (curso) {
 
-        console.log(app.historico);
-
         let _historico = app.historico.filter(function(h) {
             return h.funcionarioId == app.funcionario_selecionado.id && h.cursoId == curso.id;
         });
-
-        console.log(_historico);
 
         if (!_historico) return;
 

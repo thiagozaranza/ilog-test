@@ -30,7 +30,7 @@
 
    <table class="table table-striped">
       <tr>
-         <th>Id</th>
+         <th>ID</th>
          <th>Nome</th>
          <th>Endereço</th>
          <th>Telefone</th>
@@ -194,6 +194,7 @@
             <div class="modal-body">
                <table class="table table-striped">
                   <tr>
+                     <th>ID</th>
                      <th>T&iacute;tulo</th>
                      <th>Carga hor&aacute;ria</th>
                      <th>Valor</th>
@@ -201,6 +202,7 @@
                   </tr>
 
                   <tr ng-repeat="curso in app.cursos_disponiveis">
+                     <td>{{ curso.id }}</td>
                      <td>{{ curso.titulo }}</td>
                      <td>{{ curso.carga_horaria }}</td>
                      <td>R$ {{ curso.valor }}</td>
@@ -211,13 +213,13 @@
                   </tr>
 
                   <tr ng-if="app.cursos_disponiveis.length == 0 && !app.carregando_cursos_disponiveis">
-                     <td colspan="4">
+                     <td colspan="5">
                         <div class="alert alert-warning" role="alert">Nenhum curso dispon&iacute;vel.</div>
                      </td>                    
                   </tr>
 
                   <tr ng-if="app.carregando_cursos_disponiveis">
-                     <td colspan="4">
+                     <td colspan="5">
                         Carregando...
                      </td>                    
                   </tr>
