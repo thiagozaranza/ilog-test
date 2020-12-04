@@ -72,6 +72,13 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
         app.listarCursos();
     };
 
+    $('#modalCadastroCurso').on('show.bs.modal', function (e) {
+        $('#appInputCursoTitulo').val('');
+        $('#appInputCursoDescricao').val('');
+        $('#appInputCursoCargaH').val('');
+        $('#appInputCursoValor').val('');
+    });
+
     app.editarCurso = function(curso) {
         app.curso_selecionado = angular.copy(curso);
         $('#modalEditarCurso').modal('show');
@@ -169,19 +176,29 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
     };
 
     app.exportarPDF = function() {
-        
+
+        FuncionarioService.listar()
+            .then(function(response) {                
+                let _funcionarios =  response['data']['items'];
+                InscricaoService.listar()
+                    .then(function(response) {                
+                        let _inscricoes = response['data'];
+                        app.makePDF(_funcionarios, _inscricoes);
+                    }, function(error) {
+                        console.log(error);
+                        alert(error.data);                
+                    }); 
+
+            }, function(error) {
+                console.log(error);
+                alert(error.data);                
+            });
+    } 
+    
+    app.makePDF = function(funcionarios, inscricoes) {
+
         var docDefinition = {
-            content: [
-                {text: app.curso_selecionado.titulo, style: 'header'},
-                {text: app.curso_selecionado.descricao, style: 'subheader'},
-                {text: 'Funcionarios inscritos'},
-                {
-                    style: 'tableExample',
-                    table: {
-                        body: app.parseFuncionarios()
-                    }
-                }
-            ],
+            content: app.parseCursos(funcionarios, inscricoes),
             styles: {
                 header: {
                     fontSize: 18,
@@ -199,22 +216,82 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
             }            
         };
 
+        pdfMake.createPdf(docDefinition).download("cursos.pdf");    
+    };
+
+    app.exportarPDFCurso = function() {
+        
+        var docDefinition = {
+            content: [
+                {text: app.curso_selecionado.titulo, style: 'header'},
+                {text: app.curso_selecionado.descricao, style: 'subheader'},
+                {text: 'Funcionarios inscritos'},
+                {
+                    style: 'tableExample',
+                    table: {
+                        body: app.parseFuncionarios(app.funcionarios)
+                    }
+                }
+            ],
+            styles: {
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                subheader: {
+                    fontSize: 16,
+                    bold: true,
+                    margin: [0, 10, 0, 5]
+                },
+                tableExample: {
+                    margin: [0, 5, 0, 5]
+                }               
+            }            
+        };
+
         pdfMake.createPdf(docDefinition).download("inscritos.pdf");    
     };
 
-    app.parseFuncionarios = function() 
+    app.parseFuncionarios = function(funcionarios) 
     {
-        return [...app.funcionarios.map(function(f) {
+        return [...funcionarios.map(function(f) {
             return [f.nome, f.telefone, f.endereco]
         })];
     }
 
-    $('#modalCadastroCurso').on('show.bs.modal', function (e) {
-        $('#appInputCursoTitulo').val('');
-        $('#appInputCursoDescricao').val('');
-        $('#appInputCursoCargaH').val('');
-        $('#appInputCursoValor').val('');
-    });
+    app.parseCursos = function(funcionarios, inscricoes) 
+    {
+        let content = [];
+
+        content.push({text: "HeliosTur - Treinamentos", style: 'header'});
+        content.push({text: "Todos os cursos oferecidos:", style: 'subheader'});
+
+        for (const i in app.cursos) {
+
+            let _curso = app.cursos[i];
+
+            // Filtrar inscrições referentes ao curso. Retorna a lista dos ids dos funcionários inscritos.
+            let _inscricoes = inscricoes.filter(i => parseInt(i.cursoId) == parseInt(_curso.id)).map(i => parseInt(i.funcionarioId));
+
+            if (_inscricoes.length == 0)
+                continue;
+
+            // Filtrar funcionarios inscritos no curso
+            let _funcionarios = funcionarios.filter(i => _inscricoes.includes(parseInt(i.id)));
+
+            content.push({text: _curso.titulo, style: 'subheader'});
+            content.push({text: _curso.descricao});
+            content.push({
+                style: 'tableExample',
+                table: {
+                    body: app.parseFuncionarios(_funcionarios)
+                }
+            });
+        }
+
+        return content;
+    }
 
     $('#modalInscritosCurso').on('show.bs.modal', function (e) {
         app.listarInscritos();
