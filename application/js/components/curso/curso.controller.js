@@ -17,6 +17,14 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
     app.inscricoes_erro = false;
     app.inscricoes = [];
 
+    app.funcionarios = [];
+    app.funcionarios_carregando = true;
+    app.funcionarios_erro = false;
+
+    app.funcionarios_diponiveis = [];
+    app.funcionarios_diponiveis_carregando = true;
+    app.funcionarios_diponiveis_erro = false;
+
     app.submitFormCadastro = function(form) {
     
     };
@@ -153,12 +161,10 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
                 app.funcionarios_carregando = false;    
                 
                 // Filtrar apenas inscricoes do curso selecionado
-                let _inscricoes = app.inscricoes.filter(function(i) {
-                    return i.cursoId == app.curso_selecionado.id;
-                });
+                let _inscricoes = app.inscricoes.filter(i => i.cursoId == app.curso_selecionado.id);
 
                 // Filtrar funcionarios inscritos no curso
-                app.funcionarios =  angular.copy(response['data']['items'].filter(function(f) {
+                app.funcionarios = angular.copy(response['data']['items'].filter(function(f) {
                     return _inscricoes.map(function(i) {
                         return parseInt(i.funcionarioId);
                     }).includes(parseInt(f.id));
@@ -174,6 +180,48 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
                 app.funcionarios_erro = error.data;
             });
     };
+
+    app.listarFuncionariosDisponiveis = function() {
+        
+        app.funcionarios_disponiveis_carregando = true; 
+
+        FuncionarioService.listar()
+            .then(function(response) {
+                app.funcionarios_disponiveis_carregando = false;    
+                
+                // Filtrar apenas inscricoes do curso selecionado
+                let _inscricoes = app.inscricoes
+                    .filter(i => i.cursoId == app.curso_selecionado.id)
+                    .map(i => parseInt(i.funcionarioId))
+
+                // Filtrar funcionarios não inscritos no curso
+                app.funcionarios_disponiveis = response['data']['items']
+                    .filter(f => !_inscricoes.includes(parseInt(f.id)));
+
+            }, function(error) {
+                console.log(error);
+                alert(error.data);
+                app.funcionarios_disponiveis_carregando = false;
+                app.funcionarios_disponiveis_erro = error.data;
+            });
+    }
+
+    app.inscreverFuncionario = function (funcionario) {
+
+        let inscricao = {
+            cursoId: app.curso_selecionado.id,
+            funcionarioId: funcionario.id
+        };
+
+        InscricaoService.inserir(inscricao)
+            .then(function(response) {
+                $('#modalInscreverFuncionario').modal('hide');
+                app.listarInscritos();
+            }, function(error) {
+                console.log(error);
+                alert(error.data);
+            });
+    }
 
     app.exportarPDF = function() {
 
@@ -295,6 +343,10 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
 
     $('#modalInscritosCurso').on('show.bs.modal', function (e) {
         app.listarInscritos();
+    });
+
+    $('#modalInscreverFuncionario').on('show.bs.modal', function (e) {
+        app.listarFuncionariosDisponiveis();
     });
     
     $('#curso_filter').focus();

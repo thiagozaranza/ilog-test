@@ -204,24 +204,27 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Inscritos do curso</h4>
-                    <h3>{{ app.curso_selecionado.titulo }}</h3>
-
+                    <h4 class="modal-title">{{ app.curso_selecionado.titulo }}</h4>
                 </div>
                 <div class="modal-body">
 
                     <nav class="navbar navbar-default">
                         <div class="container-fluid">
                             <div class="navbar-header">
-                                <a class="navbar-brand" href="#">Lista de funcion&aacute;rios inscritos</a>
+                                <a class="navbar-brand" href="#">Funcion&aacute;rios inscritos</a>
                             </div>
 
                             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                                 <ul class="nav navbar-nav navbar-right">
                                     <li>
+                                        <button type="button"                                             
+                                            class="btn btn-primary" 
+                                            style="margin: 10px 10px 0 0;" 
+                                            data-toggle="modal"
+                                            data-target="#modalInscreverFuncionario">Inscrever funcionário</button>
                                         <button type="button" 
                                             ng-disabled="app.funcionarios_carregando || app.inscricoes_carregando || app.funcionarios.length == 0"
-                                            class="btn btn-warning" style="margin-top: 10px;" data-toggle="modal"
+                                            class="btn btn-warning" style="margin-top: 10px;"
                                             ng-click="app.exportarPDFCurso()">Exportar PDF</button>
                                     </li>
                                 </ul>
@@ -235,7 +238,6 @@
                             <th>Nome</th>
                             <th>Telefone</th>
                             <th>Data admissão</th>
-                            <th></th>
                         </tr>
 
                         <tr ng-repeat="funcionario in app.funcionarios">
@@ -245,8 +247,7 @@
                             <td>{{ funcionario.admissao | date: 'dd/MM/yyyy' }}</td>                            
                         </tr>
 
-                        <tr
-                            ng-if="app.funcionarios.length == 0 && !app.funcionarios_carregando && !app.funcionarios_erro">
+                        <tr ng-if="app.funcionarios.length == 0 && !app.funcionarios_carregando && !app.funcionarios_erro">
                             <td colspan="6">
                                 <div class="alert alert-warning" role="alert">Nenhum funcion&aacute;rio inscrito.
                                 </div>
@@ -276,6 +277,66 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" ng-click="app.cancelarInscritosCurso()"
+                        style="float: left;">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de de inscricao de funcionario -->
+    <div class="modal fade" tabindex="-1" style="z-index: 9999;" id="modalInscreverFuncionario" role="dialog" aria-labelledby="">
+        <div class="modal-dialog" role="document">
+            <div id="pdf" class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Funcion&aacute;rios dispon&iacute;veis</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Telefone</th> 
+                            <th></th>                          
+                        </tr>
+
+                        <tr ng-repeat="funcionario in app.funcionarios_disponiveis">
+                            <td>{{ funcionario.id }}</td>
+                            <td>{{ funcionario.nome }}</td>                            
+                            <td>{{ funcionario.telefone }}</td>
+                            <td>
+                                <button type="button" 
+                                    class="btn btn-primary" 
+                                    ng-click="app.inscreverFuncionario(funcionario)"
+                                    style="margin-right: 10px;">Inscrever</button>
+                            </td>                            
+                        </tr>
+
+                        <tr ng-if="app.funcionarios_disponiveis.length == 0">
+                            <td colspan="6">
+                                <div class="alert alert-warning" role="alert">Nenhum funcion&aacute;rio inscrito.
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr ng-if="app.funcionarios_disponiveis_carregando">
+                            <td colspan="6">
+                                Carregando...
+                            </td>
+                        </tr>
+
+                        <tr ng-if="app.funcionarios_disponiveis_erro">
+                            <td colspan="6">
+                                <div class="alert alert-danger" role="alert"><b>Woops!</b> {{ app.funcionarios_erro }}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" 
+                        data-dismiss="modal"
                         style="float: left;">Cancelar</button>
                 </div>
             </div>
