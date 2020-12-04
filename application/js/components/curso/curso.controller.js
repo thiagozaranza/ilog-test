@@ -72,13 +72,6 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
         app.listarCursos();
     };
 
-    $('#modalCadastroCurso').on('show.bs.modal', function (e) {
-        $('#appInputCursoTitulo').val('');
-        $('#appInputCursoDescricao').val('');
-        $('#appInputCursoCargaH').val('');
-        $('#appInputCursoValor').val('');
-    });
-
     app.editarCurso = function(curso) {
         app.curso_selecionado = angular.copy(curso);
         $('#modalEditarCurso').modal('show');
@@ -215,6 +208,13 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
             return [f.nome, f.telefone, f.endereco]
         })];
     }
+
+    $('#modalCadastroCurso').on('show.bs.modal', function (e) {
+        $('#appInputCursoTitulo').val('');
+        $('#appInputCursoDescricao').val('');
+        $('#appInputCursoCargaH').val('');
+        $('#appInputCursoValor').val('');
+    });
 
     $('#modalInscritosCurso').on('show.bs.modal', function (e) {
         app.listarInscritos();

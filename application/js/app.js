@@ -1,5 +1,7 @@
 var app = angular.module('ilog-test', ['ui.router']);
 
+app.constant("endpoint", "https://5fc6d7eff3c77600165d7981.mockapi.io/");
+
 app.config(function ($stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise('/funcionario');

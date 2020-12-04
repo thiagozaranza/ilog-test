@@ -107,7 +107,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http,
                     }).includes(parseInt(c.id));
                 }));
 
-                // Injetar o parâmetro data no objeto curso para indicar a data da matrícula
+                // Injetar o parâmetro data no objeto curso para indicar a data da inscrição
                 _historico_cursos.map(function(c) {
                     c.data = _historico.find(function(h) {
                         return h.cursoId == c.id && h.funcionarioId == app.funcionario_selecionado.id
@@ -232,7 +232,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http,
         $('#modalSelecionarCurso').modal('show');
     };
 
-    app.matricularFuncionario = function (curso) {
+    app.inscreverFuncionario = function (curso) {
         let inscricao = {
             cursoId: curso.id,
             funcionarioId: app.funcionario_selecionado.id
@@ -267,7 +267,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http,
             });
     }
 
-    app.cancelarMatriculaFuncionario = function () {
+    app.cancelarInscricaoFuncionario = function () {
         app.funcionario_selecionado = null;
         $('#modalSelecionarCurso').modal('hide');
     };
