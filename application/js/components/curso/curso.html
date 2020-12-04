@@ -191,7 +191,7 @@
     <!-- Modal de inscritos do curso -->
     <div class="modal fade" tabindex="-1" id="modalInscritosCurso" role="dialog" aria-labelledby="">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
+            <div id="pdf" class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
@@ -210,13 +210,14 @@
                             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                                 <ul class="nav navbar-nav navbar-right">
                                     <li>
-                                        <button type="button" ng-disabled="app.funcionarios_carregando || app.inscricoes_carregando"
+                                        <button type="button" 
+                                            ng-disabled="app.funcionarios_carregando || app.inscricoes_carregando || app.funcionarios.length == 0"
                                             class="btn btn-warning" style="margin-top: 10px;" data-toggle="modal"
-                                            data-target="#modalSelecionarCurso">Exportar PDF</button>
+                                            ng-click="app.exportarPDF()">Exportar PDF</button>
                                     </li>
                                 </ul>
-                            </div><!-- /.navbar-collapse -->
-                        </div><!-- /.container-fluid -->
+                            </div>
+                        </div>
                     </nav>
 
                     <table class="table table-striped">

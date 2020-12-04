@@ -148,6 +148,11 @@ angular.module('ilog-test').controller('CursoController', function ($http) {
         $('#modalInscritosCurso').modal('show');
     }
 
+    app.cancelarInscritosCurso = function() {
+        app.curso_selecionado = null;
+        $('#modalInscritosCurso').modal('hide');
+    }
+
     app.listarInscritos = function() {
         app.inscricoes_carregando = true;
         app.inscricoes_erro = false;
@@ -206,6 +211,47 @@ angular.module('ilog-test').controller('CursoController', function ($http) {
             app.funcionarios_erro = error.data;
         });
     };
+
+    app.exportarPDF = function() {
+        
+        var docDefinition = {
+            content: [
+                {text: app.curso_selecionado.titulo, style: 'header'},
+                {text: app.curso_selecionado.descricao, style: 'subheader'},
+                {text: 'Funcionarios inscritos'},
+                {
+                    style: 'tableExample',
+                    table: {
+                        body: app.parseFuncionarios()
+                    }
+                }
+            ],
+            styles: {
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                subheader: {
+                    fontSize: 16,
+                    bold: true,
+                    margin: [0, 10, 0, 15]
+                },
+                tableExample: {
+                    margin: [0, 15, 0, 15]
+                }               
+            }            
+        };
+
+        pdfMake.createPdf(docDefinition).download("curso.pdf");    
+    };
+
+    app.parseFuncionarios = function() 
+    {
+        return [...app.funcionarios.map(function(f) {
+            return [f.nome, f.telefone, f.endereco]
+        })];
+    }
 
     $('#modalInscritosCurso').on('show.bs.modal', function (e) {
         app.listarInscritos();
