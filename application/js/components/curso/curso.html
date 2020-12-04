@@ -216,16 +216,18 @@
 
                             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                                 <ul class="nav navbar-nav navbar-right">
+                                    <li>                                        
+                                        <button type="button" 
+                                            ng-disabled="app.funcionarios_carregando || app.inscricoes_carregando || app.funcionarios.length == 0"
+                                            class="btn btn-warning" style="margin: 10px 10px 0 0 "
+                                            ng-click="app.exportarPDFCurso()">Exportar PDF</button>                                            
+                                    </li>
                                     <li>
                                         <button type="button"                                             
                                             class="btn btn-primary" 
-                                            style="margin: 10px 10px 0 0;" 
+                                            style="margin-top: 10px;" 
                                             data-toggle="modal"
                                             data-target="#modalInscreverFuncionario">Inscrever funcionário</button>
-                                        <button type="button" 
-                                            ng-disabled="app.funcionarios_carregando || app.inscricoes_carregando || app.funcionarios.length == 0"
-                                            class="btn btn-warning" style="margin-top: 10px;"
-                                            ng-click="app.exportarPDFCurso()">Exportar PDF</button>
                                     </li>
                                 </ul>
                             </div>
@@ -238,13 +240,20 @@
                             <th>Nome</th>
                             <th>Telefone</th>
                             <th>Data admissão</th>
+                            <th></th>
                         </tr>
 
                         <tr ng-repeat="funcionario in app.funcionarios">
                             <td>{{ funcionario.id }}</td>
                             <td>{{ funcionario.nome }}</td>                            
                             <td>{{ funcionario.telefone }}</td>
-                            <td>{{ funcionario.admissao | date: 'dd/MM/yyyy' }}</td>                            
+                            <td>{{ funcionario.admissao | date: 'dd/MM/yyyy' }}</td>  
+                            <td>
+                                <button type="button" 
+                                    class="btn btn-danger" 
+                                    ng-click="app.removerInscricaoFuncionario(funcionario)"
+                                    style="margin-right: 10px;">Remover</button>  
+                            </td>                          
                         </tr>
 
                         <tr ng-if="app.funcionarios.length == 0 && !app.funcionarios_carregando && !app.funcionarios_erro">

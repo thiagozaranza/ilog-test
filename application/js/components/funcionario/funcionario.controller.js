@@ -250,13 +250,11 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http,
 
     app.removerFuncionarioCurso = function (curso) {
 
-        let _historico = app.historico.filter(function(h) {
-            return h.funcionarioId == app.funcionario_selecionado.id && h.cursoId == curso.id;
-        });
+        let inscricao = app.historico.find(h => h.funcionarioId == app.funcionario_selecionado.id && h.cursoId == curso.id);
 
-        if (!_historico) return;
+        if (!inscricao) return;
         
-        InscricaoService.deletar(_historico[0].id)
+        InscricaoService.deletar(inscricao.id)
             .then(function(response) {                        
                 app.historico = [];
                 app.historico_cursos = [];

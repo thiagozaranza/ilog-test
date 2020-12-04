@@ -139,6 +139,10 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
         app.inscricoes_erro = false;
         app.inscricoes = [];
 
+        app.funcionarios = [];
+        app.funcionarios_carregando = true;
+        app.funcionarios_erro = false;
+
         InscricaoService.listar()
             .then(function(response) {   
                 app.inscricoes_carregando = false;         
@@ -184,6 +188,8 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
     app.listarFuncionariosDisponiveis = function() {
         
         app.funcionarios_disponiveis_carregando = true; 
+        app.funcionarios_disponiveis_erro = false;
+        app.funcionarios_disponiveis = [];
 
         FuncionarioService.listar()
             .then(function(response) {
@@ -216,6 +222,21 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
         InscricaoService.inserir(inscricao)
             .then(function(response) {
                 $('#modalInscreverFuncionario').modal('hide');
+                app.listarInscritos();
+            }, function(error) {
+                console.log(error);
+                alert(error.data);
+            });
+    }
+
+    app.removerInscricaoFuncionario = function (funcionario) {
+
+        let _inscricao = app.inscricoes.find(h => h.funcionarioId == funcionario.id && h.cursoId == app.curso_selecionado.id);
+
+        if (!_inscricao) return;
+
+        InscricaoService.deletar(_inscricao.id)
+            .then(function(response) {
                 app.listarInscritos();
             }, function(error) {
                 console.log(error);
