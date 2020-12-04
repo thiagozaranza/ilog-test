@@ -40,7 +40,7 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
 
         app.curso_filter = curso.nome;
         
-        CursoService.listar()
+        CursoService.listar(app.curso_filter)
             .then(function(response) {
                 app.cursos_carregando = false;            
                 app.cursos = response['data']['items'].map(function(f) {
@@ -206,7 +206,7 @@ angular.module('ilog-test').controller('CursoController', function ($http, Funci
             }            
         };
 
-        pdfMake.createPdf(docDefinition).download("curso.pdf");    
+        pdfMake.createPdf(docDefinition).download("inscritos.pdf");    
     };
 
     app.parseFuncionarios = function() 
