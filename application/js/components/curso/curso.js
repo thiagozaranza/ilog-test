@@ -13,6 +13,10 @@ angular.module('ilog-test').controller('CursoController', function ($http) {
     app.cursos_erro = false;
     app.cursos_disponiveis = [];
 
+    app.inscricoes_carregando = false;
+    app.inscricoes_erro = false;
+    app.inscricoes = [];
+
     app.submitFormCadastro = function(form) {
     
     };
@@ -139,10 +143,73 @@ angular.module('ilog-test').controller('CursoController', function ($http) {
         });
     };
 
-    app.exibirInscritos = function (funcionario) {
-        app.funcionario_selecionado = angular.copy(funcionario);
-        $('#modalHistoricoFuncionario').modal('show');
+    app.exibirInscritos = function (curso) {
+        app.curso_selecionado = angular.copy(curso);
+        $('#modalInscritosCurso').modal('show');
     }
+
+    app.listarInscritos = function() {
+        app.inscricoes_carregando = true;
+        app.inscricoes_erro = false;
+        app.inscricoes = [];
+
+        $http({
+            method: "GET",
+            url: "https://5fc6d7eff3c77600165d7981.mockapi.io/curso_funcionario?sortBy=createdAt&order=desc",
+            dataType: 'json',
+            data: {},
+            headers: { "Content-Type": "application/json" }
+        }).then(function(response) {   
+            app.inscricoes_carregando = false;         
+            app.inscricoes = response['data'];
+            app.listarFuncionarios();
+        }, function(error) {
+            console.log(error.data);
+            app.inscricoes_carregando = false;
+            app.inscricoes_erro = error.data;
+        });
+    };
+
+    app.listarFuncionarios = function() {
+        app.funcionarios = [];
+        app.funcionarios_carregando = true;
+        app.funcionarios_erro = false;
+
+        $http({
+            method: "GET",
+            url: "https://5fc6d7eff3c77600165d7981.mockapi.io/funcionarios?sortBy=nome&order=asc&",
+            dataType: 'json',
+            data: {},
+            headers: { "Content-Type": "application/json" }
+        }).then(function(response) {
+            app.funcionarios_carregando = false;    
+            
+            // Filtrar apenas inscricoes do curso selecionado
+            let _inscricoes = app.inscricoes.filter(function(i) {
+                return i.cursoId == app.curso_selecionado.id;
+            });
+
+            // Filtrar funcionarios inscritos no curso
+            app.funcionarios =  angular.copy(response['data']['items'].filter(function(f) {
+                return _inscricoes.map(function(i) {
+                    return parseInt(i.funcionarioId);
+                }).includes(parseInt(f.id));
+            }).map(function(f) {
+                f.admissao = new Date(f.admissao);
+                return f;
+            }));
+
+        }, function(error) {
+            console.log(error);
+            alert(error.data);
+            app.funcionarios_carregando = false;
+            app.funcionarios_erro = error.data;
+        });
+    };
+
+    $('#modalInscritosCurso').on('show.bs.modal', function (e) {
+        app.listarInscritos();
+    });
     
     $('#curso_filter').focus();
 
