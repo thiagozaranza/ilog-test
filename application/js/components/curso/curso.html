@@ -1,1 +1,191 @@
-curso
+<div ng-app="ilog-test" ng-controller="CursoController as app">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Cursos</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="curso_filter" ng-model="curso_search.nome">
+                    </div>
+                    <button type="button" class="btn btn-default"
+                        ng-click="app.localizarCurso(curso_search)">Localizar</button>
+                    <button type="button" class="btn btn-default" ng-if="app.curso_filter"
+                        ng-click="app.limparFiltro()">Listar todos</button>
+                </form>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <button type="button" class="btn btn-primary" style="margin-top: 10px;" data-toggle="modal"
+                            data-target="#modalCadastroCurso">Cadastrar curso</button>
+                    </li>
+                </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <table class="table table-striped">
+        <tr>
+            <th>ID</th>
+            <th>T&iacute;tulo</th>
+            <th>Descrição</th>
+            <th>Carca hor&aacute;ria</th>
+            <th>Valor</th>
+            <th></th>
+        </tr>
+
+        <tr ng-repeat="curso in app.cursos">
+            <td>{{ curso.id }}</td>
+            <td>{{ curso.titulo }}</td>
+            <td>{{ curso.descricao }}</td>
+            <td>{{ curso.carga_horaria }}</td>
+            <td>{{ curso.valor }}</td>
+            <td>
+                <button type="button" class="btn btn-info" ng-click="app.exibirInscritos(curso)"
+                    style="margin-right: 10px;">Inscritos</button>
+                <button type="button" class="btn btn-default" ng-click="app.editarCurso(curso)"
+                    style="margin-right: 10px;">Editar</button>
+                <button type="button" class="btn btn-danger"
+                    ng-click="app.confirmarDelecaoCurso(curso)">Deletar</button>
+            </td>
+        </tr>
+
+        <tr ng-if="app.cursos.length == 0 && !app.cursos_carregando && !app.cursos_erro">
+            <td colspan="6">
+                <div class="alert alert-warning" role="alert">Nenhum funcion&aacute;rio cadastrado.</div>
+            </td>
+        </tr>
+
+        <tr ng-if="app.cursos_carregando">
+            <td colspan="6">
+                Carregando...
+            </td>
+        </tr>
+
+        <tr ng-if="app.cursos_erro">
+            <td colspan="6">
+                <div class="alert alert-danger" role="alert"><b>Woops!</b> {{ app.cursos_erro }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Modal cadastro de curso-->
+    <div class="modal fade" id="modalCadastroCurso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <form name="formCadastroCurso" ng-submit="app.submitFormCadastro(formCadastroCurso)" novalidate>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Cadastro de curso</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="appInputCursoTitulo">T&iacute;tulo*</label>
+                            <input id="appInputCursoTitulo" type="text" class="form-control" ng-model="curso.titulo"
+                                placeholder="título do curso" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appInputCursoDescricao">Descri&ccedil;&atilde;o*</label>
+                            <input id="appInputCursoDescricao" type="text" class="form-control"
+                                ng-model="curso.descricao" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appInputCursoCargaH">Carga hor&aacute;ria*</label>
+                            <input id="appInputCursoCargaH" type="text" class="form-control"
+                                ng-model="curso.carga_horaria" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appInputCursoValor">Valor</label>
+                            <input id="appInputCursoValor" class="form-control" ng-model="curso.valor">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                            style="float: left;">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="formCadastroCurso.$invalid"
+                            ng-click="app.cadastrarCurso(curso)">
+                            Salvar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal edição de curso-->
+    <div class="modal fade" id="modalEditarCurso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <form name="formCadastroCurso" ng-submit="app.submitFormCadastro(formCadastroCurso)" novalidate>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Cadastro de curso</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="appInputCursoTitulo">T&iacute;tulo*</label>
+                            <input id="appInputCursoTitulo" type="text" class="form-control" ng-model="app.curso_selecionado.titulo"
+                                placeholder="título do curso" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appInputCursoDescricao">Descri&ccedil;&atilde;o*</label>
+                            <input id="appInputCursoDescricao" type="text" class="form-control"
+                                ng-model="app.curso_selecionado.descricao" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appInputCursoCargaH">Carga hor&aacute;ria*</label>
+                            <input id="appInputCursoCargaH" type="text" class="form-control"
+                                ng-model="app.curso_selecionado.carga_horaria" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appInputCursoValor">Valor</label>
+                            <input id="appInputCursoValor" class="form-control" ng-model="app.curso_selecionado.valor">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal"
+                            style="float: left;">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="formCadastroCurso.$invalid"
+                            ng-click="app.updateCurso(curso)">
+                            Salvar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de deleção do curso-->
+   <div class="modal fade" tabindex="-1" id="modalConfirmacaoDeleteCurso" role="dialog"
+   aria-labelledby="modalConfirmacaoDeleteCursoLabel">
+   <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Atenção!</h4>
+         </div>
+         <div class="modal-body">
+            Deseja realmente deletar o curso?
+            <h3>{{ app.curso_selecionado.titulo }}</h3>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" ng-click="app.cancelarDelecaoCurso()"
+               style="float: left;">Cancelar</button>
+            <button type="button" class="btn btn-danger" ng-click="app.deletarCurso()">Confirmar</button>
+         </div>
+      </div>
+
+   </div>
+</div>
+
+</div>

@@ -2,13 +2,6 @@ angular.module('ilog-test').component('funcionario', {
 
     templateUrl: 'js/components/funcionario/funcionario.html',
 
-    controller: function () {
-        this.greeting = 'hello';
-
-        this.toggleGreeting = function () {
-            this.greeting = (this.greeting == 'hello') ? 'whats up' : 'hello'
-        }
-    }
 });
 
 angular.module('ilog-test').controller('FuncionarioController', function ($http) {
@@ -215,7 +208,6 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
             });
         }, function(error) {
             console.log(error);
-            alert(error.data);
             app.funcionarios_carregando = false;
             app.funcionarios_erro = error.data;
         });
@@ -232,7 +224,7 @@ angular.module('ilog-test').controller('FuncionarioController', function ($http)
         $('#modalEdicaoFuncionario').modal('show');
     }
 
-    app.atualizarFuncionario = function() {
+    app.updateFuncionario = function() {
         $http({
             method: "PUT",
             url: "https://5fc6d7eff3c77600165d7981.mockapi.io/funcionarios/" + app.funcionario_selecionado.id,
